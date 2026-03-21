@@ -1,0 +1,6 @@
+flask-login
+datetime
+flask-SQLAlchemy
+FlaskForm
+Flask
+flask-migrate

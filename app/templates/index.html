@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - Gestion Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .hero {
+        position: relative;
+        background: url('{{ url_for('static', filename='images/hero-bg.png') }}') no-repeat center center;
+        background-size: cover;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1;
+    }
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    .btn-hero {
+        border-radius: 40px;
+        padding: 12px 30px;
+        font-weight: 600;
+        margin: 0 10px;
+        transition: transform 0.3s;
+    }
+    .btn-hero:hover {
+        transform: translateY(-3px);
+    }
+    .feature-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    .feature-icon {
+        font-size: 3rem;
+        color: #e67e22;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container hero-content text-center">
+        <h1 class="display-4 fw-bold">Gérez vos finances en toute simplicité</h1>
+        <p class="lead mt-3">Suivez vos revenus, dépenses et atteignez vos objectifs financiers.</p>
+        <div class="mt-4">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-hero btn-lg">Commencer gratuitement</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-hero btn-lg">Se connecter</a>
+        </div>
+    </div>
+</div>
+
+<!-- Section des fonctionnalités -->
+<div class="container py-5">
+    <div class="row text-center mb-5">
+        <div class="col-md-12">
+            <h2 class="display-5 fw-bold">Pourquoi nous choisir ?</h2>
+            <p class="lead text-muted">Des outils simples et puissants pour prendre le contrôle de votre argent.</p>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card h-100 text-center p-4">
+                <i class="bi bi-graph-up feature-icon"></i>
+                <h3 class="h4 mt-3">Visualisation claire</h3>
+                <p>Graphiques interactifs pour analyser vos dépenses et suivre votre évolution.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 text-center p-4">
+                <i class="bi bi-tags feature-icon"></i>
+                <h3 class="h4 mt-3">Catégories personnalisables</h3>
+                <p>Classez vos transactions par catégories et gérez votre budget facilement.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 text-center p-4">
+                <i class="bi bi-currency-exchange feature-icon"></i>
+                <h3 class="h4 mt-3">Multi-devises</h3>
+                <p>Choisissez votre devise préférée pour suivre vos finances dans votre monnaie.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section témoignage (optionnel) -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 text-center">
+                <i class="bi bi-quote display-1 text-secondary"></i>
+                <p class="lead fst-italic">"Cette application a changé ma façon de gérer mon argent. Simple, efficace et visuellement agréable."</p>
+                <p class="fw-bold">- Dán Bagalwa, utilisateur</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
