@@ -1,6 +1,6 @@
 flask-login
 datetime
 flask-SQLAlchemy
-FlaskForm
+Flask-Form
 Flask
 flask-migrate
