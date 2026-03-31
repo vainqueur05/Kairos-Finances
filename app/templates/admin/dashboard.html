@@ -1,66 +1,187 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">Tableau de bord administrateur</h1>
+{% block title %}Console de Supervision | Kairos-Admin{% endblock %}
 
-    <div class="row">
+{% block extra_head %}
+<style>
+    .dashboard-container {
+        margin-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    /* Stat Cards - Style Minimaliste Luxury */
+    .stat-card {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        position: relative;
+        transition: 0.4s;
+    }
+
+    .stat-card:hover {
+        border-color: var(--k-gold);
+        background: rgba(212, 175, 55, 0.02);
+    }
+
+    .stat-label {
+        color: #888;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+
+    .stat-value {
+        color: #fff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        margin-top: 10px;
+    }
+
+    .stat-icon {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        font-size: 1.5rem;
+        color: rgba(212, 175, 55, 0.3);
+    }
+
+    /* Listes et Actions */
+    .admin-card {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        height: 100%;
+    }
+
+    .admin-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: var(--k-gold);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+    }
+
+    .list-group-item {
+        background: transparent !important;
+        border-color: rgba(255, 255, 255, 0.03) !important;
+        color: #ccc;
+        padding: 15px 25px;
+    }
+
+    .btn-quick-action {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        background: transparent;
+        border-radius: 0;
+        padding: 12px;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        text-align: left;
+    }
+
+    .btn-quick-action:hover {
+        background: var(--k-gold);
+        color: #000;
+        border-color: var(--k-gold);
+    }
+
+    .gold-divider {
+        width: 50px;
+        height: 2px;
+        background: var(--k-gold);
+        margin-bottom: 25px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <div class="mb-5 animate__animated animate__fadeIn">
+        <span class="text-gold small text-uppercase letter-spacing-2">Système de Monitoring</span>
+        <h1 class="display-5 text-white fw-bold mb-3">Tableau de Bord Administrateur</h1>
+        <div class="gold-divider"></div>
+    </div>
+
+    <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3 animate__animated animate__fadeInLeft">
-                <div class="card-body">
-                    <h5 class="card-title">Utilisateurs</h5>
-                    <p class="card-text display-6">{{ users_count }}</p>
-                </div>
+            <div class="stat-card animate__animated animate__fadeInUp">
+                <i class="bi bi-people stat-icon"></i>
+                <div class="stat-label">Utilisateurs</div>
+                <div class="stat-value display-5">{{ users_count }}</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3 animate__animated animate__fadeInLeft" style="animation-delay: 0.1s;">
-                <div class="card-body">
-                    <h5 class="card-title">Transactions</h5>
-                    <p class="card-text display-6">{{ transactions_count }}</p>
-                </div>
+            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                <i class="bi bi-currency-exchange stat-icon"></i>
+                <div class="stat-label">Transactions</div>
+                <div class="stat-value display-5">{{ transactions_count }}</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info mb-3 animate__animated animate__fadeInLeft" style="animation-delay: 0.2s;">
-                <div class="card-body">
-                    <h5 class="card-title">Catégories</h5>
-                    <p class="card-text display-6">{{ categories_count }}</p>
-                </div>
+            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <i class="bi bi-tags stat-icon"></i>
+                <div class="stat-label">Catégories</div>
+                <div class="stat-value display-5">{{ categories_count }}</div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3 animate__animated animate__fadeInLeft" style="animation-delay: 0.3s;">
-                <div class="card-body">
-                    <h5 class="card-title">Visiteurs (jour)</h5>
-                    <p class="card-text display-6">{{ visitors_today }}</p>
-                </div>
+            <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <i class="bi bi-activity stat-icon"></i>
+                <div class="stat-label">Visites / 24h</div>
+                <div class="stat-value display-5">{{ visitors_today }}</div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Derniers inscrits</div>
-                <div class="card-body">
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="admin-card animate__animated animate__fadeInLeft">
+                <div class="admin-card-header">Flux des Inscriptions Récentes</div>
+                <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         {% for user in recent_users %}
-                        <li class="list-group-item">
-                            {{ user.username }} ({{ user.email }}) - {{ user.date_created.strftime('%d/%m/%Y') }}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-white fw-bold d-block">{{ user.username }}</span>
+                                <span class="text-muted small">{{ user.email }}</span>
+                            </div>
+                            <span class="text-gold opacity-50 small">{{ user.date_created.strftime('%d %b %Y') }}</span>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">Actions rapides</div>
-                <div class="card-body">
-                    <a href="{{ url_for('admin.list_users') }}" class="btn btn-outline-primary w-100 mb-2">Gérer les utilisateurs</a>
-                    <a href="{{ url_for('transactions.list_transactions') }}" class="btn btn-outline-success w-100 mb-2">Voir toutes les transactions</a>
-                    <a href="{{ url_for('transactions.list_categories') }}" class="btn btn-outline-info w-100">Gérer les catégories</a>
+
+        <div class="col-md-5">
+            <div class="admin-card animate__animated animate__fadeInRight">
+                <div class="admin-card-header">Protocole d'Administration</div>
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column gap-3">
+                        <a href="{{ url_for('admin.list_users') }}" class="btn btn-quick-action d-flex justify-content-between align-items-center">
+                            <span>Gérer les terminaux utilisateurs</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="{{ url_for('transactions.list_transactions') }}" class="btn btn-quick-action d-flex justify-content-between align-items-center">
+                            <span>Auditer les flux de transactions</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="{{ url_for('transactions.list_categories') }}" class="btn btn-quick-action d-flex justify-content-between align-items-center">
+                            <span>Configurer l'architecture des catégories</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-5 p-3 border border-secondary border-opacity-10">
+                        <p class="small text-muted mb-0 italic">
+                            <i class="bi bi-terminal me-2"></i>
+                            Console KAIROS v2.6 - Logged as SuperAdmin
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

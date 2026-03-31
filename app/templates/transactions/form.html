@@ -1,56 +1,165 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ title }} | Kairos-Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-wrapper {
+        max-width: 650px;
+        margin: 60px auto;
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 45px;
+        position: relative;
+    }
+
+    /* Signature visuelle Kairos */
+    .form-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 3px; height: 50px;
+        background: var(--k-gold);
+    }
+
+    .form-label {
+        color: var(--k-gold);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    /* Inputs personnalisés */
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0 !important;
+        color: white !important;
+        padding: 14px 18px;
+        transition: all 0.4s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--k-gold) !important;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.1) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .input-group-text {
+        background: rgba(212, 175, 55, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0 !important;
+        color: var(--k-gold);
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Boutons de commande */
+    .btn-submit {
+        background: var(--k-gold);
+        color: #000;
+        border: none;
+        border-radius: 0;
+        padding: 15px 35px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .btn-submit:hover {
+        background: #fff;
+        transform: translateY(-3px);
+    }
+
+    .btn-cancel {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .btn-cancel:hover { color: #fff; }
+
+    .error-feedback {
+        font-size: 0.7rem;
+        margin-top: 6px;
+        color: #ff4444;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>{{ title }}</h1>
+<div class="form-wrapper animate__animated animate__fadeIn">
+    <div class="mb-5">
+        <span class="text-muted small text-uppercase letter-spacing-2">Terminal de Saisie Finance</span>
+        <h2 class="text-white fw-bold mb-0">{{ title }}</h2>
+    </div>
+
     <form method="POST">
         {{ form.hidden_tag() }}
 
-        <div class="form-group">
+        <div class="mb-4">
             {{ form.amount.label(class="form-label") }}
             <div class="input-group">
-                {{ form.amount(class="form-control") }}
+                {{ form.amount(class="form-control form-control-lg", placeholder="0.00") }}
                 <span class="input-group-text">{{ current_user.currency }}</span>
             </div>
             {% if form.amount.errors %}
-                <div class="text-danger">
-                    {% for error in form.amount.errors %}{{ error }}{% endfor %}
+                <div class="error-feedback">
+                    {% for error in form.amount.errors %}<i class="bi bi-exclamation-triangle me-1"></i> {{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
 
-        <div class="form-group">
+        <div class="mb-4">
             {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control") }}
+            {{ form.description(class="form-control", placeholder="Objet de l'opération...") }}
         </div>
 
-        <div class="form-group">
-            {{ form.date.label(class="form-label") }}
-            {{ form.date(class="form-control", type="date") }}
-            {% if form.date.errors %}
-                <div class="text-danger">
-                    {% for error in form.date.errors %}{{ error }}{% endfor %}
-                </div>
-            {% endif %}
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                {{ form.date.label(class="form-label") }}
+                {{ form.date(class="form-control", type="date") }}
+                {% if form.date.errors %}
+                    <div class="error-feedback">
+                        {% for error in form.date.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6 mb-4">
+                {{ form.type.label(class="form-label") }}
+                {{ form.type(class="form-select") }}
+            </div>
         </div>
 
-        <div class="form-group">
-            {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-control") }}
-        </div>
-
-        <div class="form-group">
+        <div class="mb-5">
             {{ form.category_id.label(class="form-label") }}
-            {{ form.category_id(class="form-control") }}
+            {{ form.category_id(class="form-select") }}
             {% if form.category_id.errors %}
-                <div class="text-danger">
+                <div class="error-feedback">
                     {% for error in form.category_id.errors %}{{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{{ url_for('transactions.list_transactions') }}" class="btn btn-secondary">Annuler</a>
+        <div class="d-flex align-items-center justify-content-between pt-3 border-top border-secondary border-opacity-10">
+            <a href="{{ url_for('transactions.list_transactions') }}" class="btn-cancel">
+                <i class="bi bi-x-circle me-1"></i> Annuler l'opération
+            </a>
+            <button type="submit" class="btn btn-submit">
+                Confirmer l'enregistrement
+            </button>
+        </div>
     </form>
 </div>
 {% endblock %}

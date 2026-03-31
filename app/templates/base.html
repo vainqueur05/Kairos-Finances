@@ -3,75 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Kairos-Finances{% endblock %}</title>
-    <!-- Bootstrap CSS (une seule version) -->
+    <title>{% block title %}Kairos-Finances | Wealth Management{% endblock %}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --k-black: #050505;
+            --k-dark: #0f0f0f;
+            --k-gold: #D4AF37;
+            --k-gold-dim: rgba(212, 175, 55, 0.15);
+            --k-glass: rgba(15, 15, 15, 0.8);
+            --text-main: #f0f0f0;
+            --text-muted: #d3d0d0;
+        }
+
+        body {
+            background-color: var(--k-black);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        /* NAVBAR PREMIUM */
+        .navbar {
+            background: var(--k-black) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 1.2rem 0;
+        }
+
+        .navbar-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--k-gold) !important;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted) !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0.5rem;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--k-gold) !important;
+        }
+
+        /* DROPDOWN LUXE */
+        .dropdown-menu {
+            background: var(--k-dark);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 15px;
+        }
+
+        .dropdown-item {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            padding: 10px 20px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--k-gold-dim);
+            color: var(--k-gold);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            min-height: 85vh;
+            padding-top: 100px; /* Espace pour la navbar fixed */
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            background: var(--k-black) !important;
+            color: var(--text-muted) !important;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* UTILITAIRES KAIROS */
+        .k-card {
+            background: var(--k-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .text-gold { color: var(--k-gold); }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--k-black); }
+        ::-webkit-scrollbar-thumb { background: #222; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--k-gold); }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <!-- Navbar améliorée -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <i class="bi bi-wallet2 me-2"></i>
-                <span class="fw-bold">Kairos-Finances</span>
+                <i class="bi bi-layers-half me-2"></i>KAIROS<span class="fw-light text-white">-FINANCES</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="bi bi-list text-gold"></i>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
-                        <!-- Liens pour utilisateur connecté -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">
-                                <i class="bi bi-speedometer2 me-1"></i> Tableau de bord
-                            </a>
+                            <a class="nav-link" href="{{ url_for('main.dashboard') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('transactions.list_transactions') }}">
-                                <i class="bi bi-list-ul me-1"></i> Transactions
-                            </a>
+                            <a class="nav-link" href="{{ url_for('transactions.list_transactions') }}">Transactions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('transactions.list_categories') }}">
-                                <i class="bi bi-tags me-1"></i> Catégories
-                            </a>
+                            <a class="nav-link" href="{{ url_for('transactions.list_categories') }}">Catégories</a>
                         </li>
-                        <!-- Profil avec dropdown (corrigé) -->
+                        
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i> {{ current_user.username }}
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDrop" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person me-1"></i> {{ current_user.username }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="bi bi-gear me-2"></i> Mon profil</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="bi bi-sliders me-2"></i> Configuration</a></li>
+                                {% if current_user.is_admin %}
+                                    <li><a class="dropdown-item text-warning" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-shield-check me-2"></i> Administration</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-power me-2"></i> Déconnexion</a></li>
                             </ul>
                         </li>
-                        {% if current_user.is_admin %}
-                        <li class="nav-item">
-                            <a class="nav-link text-warning" href="{{ url_for('admin.dashboard') }}">
-                                <i class="bi bi-shield-lock me-1"></i> Admin
-                            </a>
-                        </li>
-                        {% endif %}
                     {% else %}
-                        <!-- Liens pour non connecté -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
-                            </a>
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Identification</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.register') }}">
-                                <i class="bi bi-person-plus me-1"></i> Inscription
-                            </a>
+                            <a class="nav-link border border-gold px-3 ms-lg-3" href="{{ url_for('auth.register') }}" style="border-color: var(--k-gold) !important; color: var(--k-gold) !important;">S'inscrire</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -79,24 +162,27 @@
         </div>
     </nav>
 
-    <!-- Main content -->
-    <main class="pt-5 mt-4">
-        {% block content %}{% endblock %}
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
-    <!-- Footer (optionnel) -->
-    <footer class="bg-dark text-white py-4 mt-5">
+    <footer class="py-5 mt-5">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Kairos-Finances. Tous droits réservés.</p>
+            <p class="mb-0 text-uppercase">&copy; 2026 KAIROS-FINANCES // SYSTEM PROTOCOL</p>
+            <small class="text-gold fw-bold">Designed for high-performance financial tracking.</small>
         </div>
     </footer>
 
-    <!-- Bootstrap JS (une seule version) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- GSAP (optionnel) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <!-- Script personnalisé -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Animation subtile au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from("main", { opacity: 0, y: 20, duration: 1, ease: "power2.out" });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

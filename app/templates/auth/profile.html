@@ -1,72 +1,186 @@
 {% extends 'base.html' %}
 
+{% block title %}Paramètres du Profil | Kairos-Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 50px auto;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 0;
+        position: relative;
+    }
+
+    /* En-tête de section */
+    .section-header {
+        background: rgba(212, 175, 55, 0.03);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        padding: 20px 30px;
+    }
+
+    .section-title {
+        color: var(--k-gold);
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    /* Labels et Inputs Style Kairos */
+    .form-label {
+        color: #888;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0 !important;
+        color: white !important;
+        padding: 12px 15px;
+        transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--k-gold) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.05) !important;
+    }
+
+    /* Bouton d'action */
+    .btn-update {
+        background: var(--k-gold);
+        color: #000;
+        border-radius: 0;
+        border: none;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 15px 40px;
+        transition: 0.4s;
+    }
+
+    .btn-update:hover {
+        background: #fff;
+        transform: translateY(-3px);
+    }
+
+    .security-notice {
+        border-left: 2px solid var(--k-gold);
+        background: rgba(212, 175, 55, 0.02);
+        padding: 15px 20px;
+        margin-bottom: 30px;
+    }
+
+    .error-text {
+        font-size: 0.7rem;
+        color: #ff4444;
+        text-transform: uppercase;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Mon profil</h4>
+<div class="container profile-container animate__animated animate__fadeIn">
+    <div class="mb-5">
+        <span class="text-muted small text-uppercase letter-spacing-2">Configuration du Terminal</span>
+        <h2 class="text-white fw-bold">Mon Profil Utilisateur</h2>
+    </div>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="profile-card mb-5">
+            <div class="section-header">
+                <h3 class="section-title"><i class="bi bi-person-badge me-2"></i>Identité & Préférences</h3>
+            </div>
+            
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control") }}
+                        {% for error in form.username.errors %}
+                            <div class="error-text">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
+                        {% for error in form.email.errors %}
+                            <div class="error-text">{{ error }}</div>
+                        {% endfor %}
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="POST">
-                        {{ form.hidden_tag() }}
 
-                        <div class="mb-3">
-                            {{ form.username.label(class="form-label") }}
-                            {{ form.username(class="form-control") }}
-                            {% for error in form.username.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control") }}
-                            {% for error in form.email.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.currency.label(class="form-label") }}
-                            {{ form.currency(class="form-control") }}
-                        </div>
-
-                        <hr>
-                        <h5>Changer le mot de passe</h5>
-                        <div class="mb-3">
-                            {{ form.current_password.label(class="form-label") }}
-                            {{ form.current_password(class="form-control") }}
-                            {% for error in form.current_password.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.new_password.label(class="form-label") }}
-                            {{ form.new_password(class="form-control") }}
-                            <small class="text-muted">Laissez vide pour conserver l'ancien mot de passe.</small>
-                            {% for error in form.new_password.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.confirm_new_password.label(class="form-label") }}
-                            {{ form.confirm_new_password(class="form-control") }}
-                            {% for error in form.confirm_new_password.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="d-grid">
-                            {{ form.submit(class="btn btn-primary") }}
-                        </div>
-                    </form>
+                <div class="col-md-4">
+                    {{ form.currency.label(class="form-label") }}
+                    {{ form.currency(class="form-select") }}
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="profile-card mb-5">
+            <div class="section-header">
+                <h3 class="section-title"><i class="bi bi-shield-lock me-2"></i>Protocole de Sécurité</h3>
+            </div>
+            
+            <div class="form-body">
+                <div class="security-notice">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle me-2 text-gold"></i>
+                        Pour modifier vos paramètres de sécurité, remplissez les champs ci-dessous. Laissez les champs "Nouveau" vides si vous ne souhaitez pas changer de mot de passe.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    {{ form.current_password.label(class="form-label") }}
+                    {{ form.current_password(class="form-control", placeholder="Confirmez votre mot de passe actuel") }}
+                    {% for error in form.current_password.errors %}
+                        <div class="error-text">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form.new_password.label(class="form-label") }}
+                        {{ form.new_password(class="form-control", placeholder="Nouveau secret") }}
+                        {% for error in form.new_password.errors %}
+                            <div class="error-text">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form.confirm_new_password.label(class="form-label") }}
+                        {{ form.confirm_new_password(class="form-control", placeholder="Répétez le secret") }}
+                        {% for error in form.confirm_new_password.errors %}
+                            <div class="error-text">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end mb-5">
+            <button type="submit" class="btn btn-update">
+                Mettre à jour les paramètres
+            </button>
+        </div>
+    </form>
 </div>
 {% endblock %}

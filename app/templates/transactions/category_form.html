@@ -1,25 +1,123 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ title }} | Kairos-Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .category-wrapper {
+        max-width: 550px;
+        margin: 80px auto;
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 40px;
+        position: relative;
+    }
+
+    /* Indicateur de module */
+    .category-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 3px; height: 40px;
+        background: var(--k-gold);
+    }
+
+    .form-label {
+        color: var(--k-gold);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0 !important;
+        color: white !important;
+        padding: 12px 15px;
+        transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--k-gold) !important;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .btn-save-cat {
+        background: var(--k-gold);
+        color: #000;
+        border: none;
+        border-radius: 0;
+        padding: 12px 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+        transition: 0.4s;
+    }
+
+    .btn-save-cat:hover {
+        background: #fff;
+        transform: scale(1.02);
+    }
+
+    .btn-cancel-cat {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+    }
+
+    .btn-cancel-cat:hover { color: #fff; }
+
+    .error-tag {
+        font-size: 0.7rem;
+        color: #ff4444;
+        margin-top: 5px;
+        text-transform: uppercase;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>{{ title }}</h1>
+<div class="category-wrapper animate__animated animate__fadeInUp">
+    <div class="mb-5">
+        <span class="text-gold small text-uppercase letter-spacing-2">Configuration Système</span>
+        <h2 class="text-white fw-bold mb-0">{{ title }}</h2>
+        <p class="text-muted small">Définissez un nouveau segment de classification financière.</p>
+    </div>
+
     <form method="POST">
         {{ form.hidden_tag() }}
-        <div class="form-group">
+
+        <div class="mb-4">
             {{ form.name.label(class="form-label") }}
-            {{ form.name(class="form-control") }}
+            {{ form.name(class="form-control", placeholder="Ex: Alimentation, Crypto, Loyer...") }}
             {% if form.name.errors %}
-                <div class="text-danger">
-                    {% for error in form.name.errors %}{{ error }}{% endfor %}
+                <div class="error-tag">
+                    {% for error in form.name.errors %}<i class="bi bi-x-circle me-1"></i> {{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
-        <div class="form-group">
+
+        <div class="mb-5">
             {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control") }}
+            {{ form.description(class="form-control", placeholder="Optionnel : Précisez l'usage de ce segment...", rows="3") }}
         </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{{ url_for('transactions.list_categories') }}" class="btn btn-secondary">Annuler</a>
+
+        <div class="d-flex align-items-center justify-content-between pt-4 border-top border-secondary border-opacity-10">
+            <a href="{{ url_for('transactions.list_categories') }}" class="btn-cancel-cat">
+                <i class="bi bi-chevron-left me-1"></i> Annuler
+            </a>
+            <button type="submit" class="btn btn-save-cat">
+                Activer la catégorie
+            </button>
+        </div>
     </form>
 </div>
 {% endblock %}

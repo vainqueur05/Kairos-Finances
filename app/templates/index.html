@@ -1,57 +1,106 @@
 {% extends 'base.html' %}
 
-{% block title %}Accueil - Gestion Finances{% endblock %}
+{% block title %}KAIROS-FINANCES | Système de Pilotage Patrimonial{% endblock %}
 
 {% block extra_head %}
 <style>
+    /* HERO SECTION REVISITÉE */
     .hero {
         position: relative;
-        background: url('{{ url_for('static', filename='images/kairos-finance.png') }}') no-repeat center center;
-        background-size: cover;
-        min-height: 90vh;
+        /* Remplacement de l'image par un gradient sombre plus haut de gamme */
+        background: linear-gradient(135deg, #050505 0%, #111 100%);
+        min-height: 95vh;
         display: flex;
         align-items: center;
-        color: white;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        overflow: hidden;
     }
-    .hero::before {
+
+    /* Effet de texture réseau en arrière-plan */
+    .hero::after {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(var(--k-gold-dim) 1px, transparent 1px);
+        background-size: 50px 50px;
+        opacity: 0.2;
         z-index: 1;
     }
+
     .hero-content {
         position: relative;
-        z-index: 2;
+        z-index: 10;
     }
-    .btn-hero {
-        border-radius: 40px;
-        padding: 12px 30px;
-        font-weight: 600;
-        margin: 0 10px;
-        transition: transform 0.3s;
+
+    .hero-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        letter-spacing: -2px;
+        line-height: 1;
+        background: linear-gradient(to right, #fff 20%, var(--k-gold) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
-    .btn-hero:hover {
-        transform: translateY(-3px);
+
+    /* BOUTONS KAIROS */
+    .btn-kairos {
+        border-radius: 0; /* Look plus tranchant, plus luxe */
+        padding: 15px 35px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
+
+    .btn-gold {
+        background: var(--k-gold);
+        color: #000;
+        border: 1px solid var(--k-gold);
+    }
+
+    .btn-gold:hover {
+        background: transparent;
+        color: var(--k-gold);
+        box-shadow: 0 0 20px var(--k-gold-glow);
+    }
+
+    /* FEATURE CARDS DARK MODE */
     .feature-card {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-        background-color: white;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 0;
+        transition: all 0.5s ease;
+        padding: 40px !important;
     }
+
     .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        border-color: var(--k-gold);
+        background: rgba(212, 175, 55, 0.03);
+        transform: translateY(-5px);
     }
+
     .feature-icon {
-        font-size: 3rem;
-        color: #e67e22;
+        font-size: 2.5rem;
+        color: var(--k-gold);
+        margin-bottom: 25px;
+        display: inline-block;
+    }
+
+    .section-label {
+        color: var(--k-gold);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    /* TÉMOIGNAGE LUXE */
+    .quote-section {
+        background: #080808;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     }
 </style>
 {% endblock %}
@@ -59,56 +108,63 @@
 {% block content %}
 <div class="hero">
     <div class="container hero-content text-center">
-        <h1 class="display-4 fw-bold">Gérez vos finances en toute simplicité</h1>
-        <p class="lead mt-3">Suivez vos revenus, dépenses et atteignez vos objectifs financiers.</p>
-        <div class="mt-4">
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-hero btn-lg">Commencer gratuitement</a>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-hero btn-lg">Se connecter</a>
+        <span class="section-label fade-in">Protocol Kairos Finance v1.0</span>
+        <h1 class="display-1 hero-title mb-4">Maitrisez l'Art de la Richesse.</h1>
+        <p class="lead text-white mx-auto mb-5" style="max-width: 700px; letter-spacing: 0.5px;">
+            Une architecture de gestion financière conçue pour ceux qui exigent précision, clarté et performance dans le suivi de leurs actifs.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-kairos btn-gold">Initialiser le compte</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-kairos btn-outline-light">Accéder au terminal</a>
         </div>
     </div>
 </div>
 
-<!-- Section des fonctionnalités -->
-<div class="container py-5">
+<div class="container py-5 my-5">
     <div class="row text-center mb-5">
         <div class="col-md-12">
-            <h2 class="display-5 fw-bold">Pourquoi nous choisir ?</h2>
-            <p class="lead text-muted">Des outils simples et puissants pour prendre le contrôle de votre argent.</p>
+            <span class="section-label">Capacités Système</span>
+            <h2 class="display-4 fw-bold text-white">Pourquoi K-Finances ?</h2>
         </div>
     </div>
+    
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card feature-card h-100 text-center p-4">
-                <i class="bi bi-graph-up feature-icon"></i>
-                <h3 class="h4 mt-3">Visualisation claire</h3>
-                <p>Graphiques interactifs pour analyser vos dépenses et suivre votre évolution.</p>
+            <div class="card feature-card h-100 text-start">
+                <i class="bi bi-cpu-fill feature-icon"></i>
+                <h3 class="h5 text-white text-uppercase letter-spacing-1">Intelligence Analytique</h3>
+                <p class="text-white small">Visualisez vos flux de trésorerie avec des algorithmes de tracking précis pour une compréhension totale de vos habitudes.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card feature-card h-100 text-center p-4">
-                <i class="bi bi-tags feature-icon"></i>
-                <h3 class="h4 mt-3">Catégories personnalisables</h3>
-                <p>Classez vos transactions par catégories et gérez votre budget facilement.</p>
+            <div class="card feature-card h-100 text-start">
+                <i class="bi bi-fingerprint feature-icon"></i>
+                <h3 class="h5 text-white text-uppercase letter-spacing-1">Sécurité de Grade Bancaire</h3>
+                <p class="text-white small">Vos données sont encryptées et stockées dans un environnement sécurisé, respectant les protocoles de confidentialité Kairos.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card feature-card h-100 text-center p-4">
-                <i class="bi bi-currency-exchange feature-icon"></i>
-                <h3 class="h4 mt-3">Multi-devises</h3>
-                <p>Choisissez votre devise préférée pour suivre vos finances dans votre monnaie.</p>
+            <div class="card feature-card h-100 text-start">
+                <i class="bi bi-globe2 feature-icon"></i>
+                <h3 class="h5 text-white text-uppercase letter-spacing-1">Support Multi-Devises</h3>
+                <p class="text-white small">Gérez vos comptes en Franc Congolais, Dollars ou Euros. Le système adapte automatiquement vos reportings.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Section témoignage (optionnel) -->
-<div class="bg-light py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3 text-center">
-                <i class="bi bi-quote display-1 text-secondary"></i>
-                <p class="lead fst-italic">"Cette application a changé ma façon de gérer mon argent. Simple, efficace et visuellement agréable."</p>
-                <p class="fw-bold">- Vainqueur Kalema, utilisateur & CEO</p>
+<div class="quote-section py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-8 offset-md-2 text-center">
+                <i class="bi bi-quote display-3 text-gold opacity-25"></i>
+                <h4 class="fw-light fst-italic text-white-50 mb-4" style="line-height: 1.8;">
+                    "Le temps est la ressource la plus précieuse des finances. Kairos-Finances ne gère pas seulement votre argent, il vous redonne le temps de votre vision."
+                </h4>
+                <div class="mt-4">
+                    <span class="d-block text-gold text-uppercase fw-bold letter-spacing-2">Vainqueur Kalema</span>
+                    <small class="text-white">Chief Technology Officer | KAIROS</small>
+                </div>
             </div>
         </div>
     </div>

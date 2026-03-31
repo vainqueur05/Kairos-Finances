@@ -1,47 +1,154 @@
 {% extends 'base.html' %}
 
+{% block title %}Registre des Transactions | Kairos-Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .registry-container {
+        padding-top: 40px;
+    }
+
+    /* En-tête du registre */
+    .registry-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+    }
+
+    /* Style du Tableau Kairos */
+    .k-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px; /* Espace entre les lignes */
+        color: #ccc;
+    }
+
+    .k-table th {
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        color: var(--k-gold);
+        padding: 15px 20px;
+        font-weight: 700;
+        border: none;
+    }
+
+    .k-table tr {
+        background: rgba(255, 255, 255, 0.01);
+        transition: 0.3s;
+    }
+
+    .k-table tr:hover {
+        background: rgba(212, 175, 55, 0.03);
+        outline: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    .k-table td {
+        padding: 20px;
+        vertical-align: middle;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    /* Cellules spécifiques */
+    .td-date { font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; width: 120px; }
+    .td-amount { font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-align: right; }
+    .td-category { font-size: 0.8rem; text-transform: uppercase; color: #888; }
+
+    /* Montants */
+    .amt-income { color: #00ff88; }
+    .amt-expense { color: #ff4444; }
+
+    /* Actions */
+    .btn-action {
+        color: #555;
+        font-size: 1.1rem;
+        transition: 0.3s;
+        margin-left: 15px;
+        text-decoration: none;
+    }
+
+    .btn-action:hover { color: var(--k-gold); }
+    .btn-delete:hover { color: #ff4444; }
+
+    /* Bouton Ajouter */
+    .btn-kairos-add {
+        background: transparent;
+        border: 1px solid var(--k-gold);
+        color: var(--k-gold);
+        border-radius: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 10px 25px;
+        transition: 0.3s;
+    }
+
+    .btn-kairos-add:hover {
+        background: var(--k-gold);
+        color: #000;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>Mes transactions</h1>
-    <a href="{{ url_for('transactions.add_transaction') }}" class="btn btn-primary mb-3">Ajouter une transaction</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Catégorie</th>
-                <th>Montant</th>
-                <th>Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in transactions %}
-            <tr>
-                <td>{{ t.date.strftime('%d/%m/%Y') }}</td>
-                <td>{{ t.description }}</td>
-                <td>{{ t.category.name }}</td>
-                <td>{{ "%.2f"|format(t.amount) }} €</td>
-                <td>
-                    {% if t.type == 'income' %}
-                        <span class="badge bg-success">Revenu</span>
-                    {% else %}
-                        <span class="badge bg-danger">Dépense</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ url_for('transactions.edit_transaction', id=t.id) }}" class="btn btn-sm btn-warning">Modifier</a>
-                    <form action="{{ url_for('transactions.delete_transaction', id=t.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cette transaction ?')">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="6">Aucune transaction pour le moment.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="registry-container">
+    <div class="registry-header d-flex justify-content-between align-items-center">
+        <div>
+            <span class="text-gold small text-uppercase letter-spacing-2">Audit Financier</span>
+            <h1 class="display-6 fw-bold text-white mb-0">Registre des Transactions</h1>
+        </div>
+        <a href="{{ url_for('transactions.add_transaction') }}" class="btn btn-kairos-add">
+            <i class="bi bi-plus-lg me-2"></i>Nouvelle Entrée
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="k-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Catégorie</th>
+                    <th class="text-end">Montant</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td class="td-date">{{ t.date.strftime('%d . %m . %Y') }}</td>
+                    <td>
+                        <span class="text-white fw-medium">{{ t.description or 'Sans intitulé' }}</span>
+                    </td>
+                    <td class="td-category">
+                        <i class="bi bi-tag-fill me-2" style="font-size: 0.7rem;"></i>{{ t.category.name }}
+                    </td>
+                    <td class="td-amount {{ 'amt-income' if t.type == 'income' else 'amt-expense' }}">
+                        {{ '+' if t.type == 'income' else '-' }} {{ "%.2f"|format(t.amount) }} {{ current_user.currency }}
+                    </td>
+                    <td class="text-end">
+                        <a href="{{ url_for('transactions.edit_transaction', id=t.id) }}" class="btn-action" title="Modifier">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form action="{{ url_for('transactions.delete_transaction', id=t.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-action btn-delete bg-transparent border-0" onclick="return confirm('Archiver définitivement cette transaction ?')" title="Supprimer">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted italic">
+                        <i class="bi bi-inbox display-6 d-block mb-3 opacity-25"></i>
+                        Aucune transaction enregistrée dans le protocole.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

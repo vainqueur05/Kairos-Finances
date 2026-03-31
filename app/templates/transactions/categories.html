@@ -1,35 +1,134 @@
 {% extends 'base.html' %}
 
+{% block title %}Architecture des Catégories | Kairos-Finances{% endblock %}
+
+{% block extra_head %}
+<style>
+    .cat-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 25px;
+        margin-bottom: 40px;
+    }
+
+    /* Grille de catégories */
+    .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .cat-card {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 25px;
+        position: relative;
+        transition: all 0.4s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cat-card:hover {
+        border-color: var(--k-gold);
+        background: rgba(212, 175, 55, 0.02);
+        transform: translateY(-5px);
+    }
+
+    .cat-name {
+        color: var(--k-gold);
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .cat-desc {
+        color: #888;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 25px;
+        flex-grow: 1;
+    }
+
+    /* Actions discrètes */
+    .cat-actions {
+        display: flex;
+        gap: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 15px;
+    }
+
+    .action-link {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .link-edit { color: #ccc; }
+    .link-edit:hover { color: var(--k-gold); }
+    
+    .link-del { color: #555; background: none; border: none; padding: 0; }
+    .link-del:hover { color: #ff4444; }
+
+    .btn-add-cat {
+        border: 1px solid var(--k-gold);
+        color: var(--k-gold);
+        background: transparent;
+        border-radius: 0;
+        padding: 10px 25px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+    .btn-add-cat:hover {
+        background: var(--k-gold);
+        color: #000;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>Mes catégories</h1>
-    <a href="{{ url_for('transactions.add_category') }}" class="btn btn-primary mb-3">Ajouter une catégorie</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category in categories %}
-            <tr>
-                <td>{{ category.name }}</td>
-                <td>{{ category.description or '' }}</td>
-                <td>
-                    <a href="{{ url_for('transactions.edit_category', id=category.id) }}" class="btn btn-sm btn-warning">Modifier</a>
-                    <form action="{{ url_for('transactions.delete_category', id=category.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cette catégorie ?')">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="3">Aucune catégorie pour le moment.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="container py-5">
+    <div class="cat-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="text-gold small text-uppercase letter-spacing-2">Paramètres de Segmentation</span>
+            <h1 class="display-6 fw-bold text-white mb-0">Mes Catégories</h1>
+        </div>
+        <a href="{{ url_for('transactions.add_category') }}" class="btn btn-add-cat">
+            <i class="bi bi-plus-lg me-2"></i>Nouveau Segment
+        </a>
+    </div>
+
+    <div class="cat-grid">
+        {% for category in categories %}
+        <div class="cat-card animate__animated animate__fadeIn">
+            <div class="cat-name">{{ category.name }}</div>
+            <div class="cat-desc">
+                {{ category.description if category.description else 'Aucune description définie pour ce segment.' }}
+            </div>
+            <div class="cat-actions">
+                <a href="{{ url_for('transactions.edit_category', id=category.id) }}" class="action-link link-edit">
+                    <i class="bi bi-pencil-square me-1"></i> Éditer
+                </a>
+                <form action="{{ url_for('transactions.delete_category', id=category.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="action-link link-del" onclick="return confirm('Supprimer ce segment d\'analyse ?')">
+                        <i class="bi bi-trash3 me-1"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5 border border-secondary border-opacity-10">
+            <p class="text-muted italic mb-0">L'architecture est vide. Initialisez votre première catégorie.</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

@@ -1,34 +1,161 @@
 {% extends 'base.html' %}
 
+{% block title %}Contrôle des Accès | Kairos-Admin{% endblock %}
+
+{% block extra_head %}
+<style>
+    .admin-container {
+        margin-top: 50px;
+        padding-bottom: 100px;
+    }
+
+    .admin-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 20px;
+        margin-bottom: 40px;
+    }
+
+    /* Table Custom Kairos */
+    .k-table-wrapper {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+    }
+
+    .k-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #ccc;
+    }
+
+    .k-table th {
+        background: rgba(212, 175, 55, 0.03);
+        color: var(--k-gold);
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        padding: 20px;
+        font-weight: 700;
+        text-align: left;
+    }
+
+    .k-table td {
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        font-size: 0.85rem;
+        vertical-align: middle;
+    }
+
+    .k-table tr:hover {
+        background: rgba(255, 255, 255, 0.015);
+    }
+
+    /* Badge Admin */
+    .badge-admin {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 1px;
+        background: rgba(212, 175, 55, 0.1);
+        color: var(--k-gold);
+        border: 1px solid var(--k-gold);
+    }
+
+    .badge-user {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        color: #666;
+        border: 1px solid #333;
+    }
+
+    /* Actions */
+    .btn-k-action {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #888;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-k-reset:hover {
+        border-color: var(--k-gold);
+        color: var(--k-gold);
+    }
+
+    .btn-k-delete:hover {
+        border-color: #ff4444;
+        color: #ff4444;
+    }
+
+    .id-column {
+        font-family: 'Space Grotesk', monospace;
+        color: var(--k-gold);
+        opacity: 0.6;
+        width: 80px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>Gestion des utilisateurs</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom d'utilisateur</th>
-                <th>Email</th>
-                <th>Admin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ "Oui" if user.is_admin else "Non" }}</td>
-                <td>
-                    <a href="{{ url_for('admin.reset_password', user_id=user.id) }}" class="btn btn-sm btn-warning">Réinitialiser mot de passe</a>
-                    <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="container admin-container animate__animated animate__fadeIn">
+    <div class="admin-header d-flex justify-content-between align-items-end">
+        <div>
+            <span class="text-gold small text-uppercase letter-spacing-2">Privilèges Système</span>
+            <h1 class="text-white fw-bold mb-0">Gestion des Utilisateurs</h1>
+        </div>
+        <div class="text-muted small">
+            Total : <span class="text-white fw-bold">{{ users|length }}</span> comptes actifs
+        </div>
+    </div>
+
+    <div class="k-table-wrapper">
+        <table class="k-table">
+            <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>Utilisateur</th>
+                    <th>Email / Identification</th>
+                    <th>Rang</th>
+                    <th class="text-end">Commandes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td class="id-column">#{{ user.id }}</td>
+                    <td>
+                        <div class="fw-bold text-white">{{ user.username }}</div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_admin %}
+                            <span class="badge-admin">Root / Admin</span>
+                        {% else %}
+                            <span class="badge-user">Standard</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('admin.reset_password', user_id=user.id) }}" class="btn-k-action btn-k-reset">
+                                <i class="bi bi-key me-1"></i> Reset
+                            </a>
+                            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn-k-action btn-k-delete" onclick="return confirm('Confirmer la suppression irréversible de cet utilisateur ?')">
+                                    <i class="bi bi-trash3 me-1"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
